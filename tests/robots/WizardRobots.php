@@ -4,7 +4,6 @@ class WizardRobots
 {
 
     public AcceptanceTester $tester;
-    
     public function __construct(AcceptanceTester $tester)
     {
         $this->tester = $tester;
@@ -46,7 +45,4 @@ class WizardRobots
         $this->tester->executeJS("document.querySelector('#save button').click();");
     }
 
-
 }
-
-?>
