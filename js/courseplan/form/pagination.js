@@ -2,11 +2,11 @@ const tabs = ["tab-create-plan", "tab-class"];
 
 function changeTab(index){
 
-	var activeTab = $('.js-tab-control li.active');
-	var activePane = $('div .active');
+	let activeTab = $('.js-tab-control li.active');
+	let activePane = $('div .active');
 
-	var size = tabs.length -1;
-    
+	let size = tabs.length -1;
+
     if(index == 0){
         $('.prev').hide();
         $('.next').show();
@@ -20,38 +20,37 @@ function changeTab(index){
         $('.next').show();
         window.location.search.includes("update") ? $('.last').show() : $('.last').hide();
     }
-    
+
 	newTab = tabs[index];
 
     activeTab.removeClass("active");
     activePane.removeClass("active");
-    
-    newPane = newTab.substring(4).toString();
+    let newPane = newTab.substring(4).toString();
 
     $('#' + newTab).addClass("active");
     $('#' + newPane).addClass("active");
-    
+
     $('html, body').animate({scrollTop: 0}, 'fast');
 }
 
 function change2nextTab(){
-	var activeTab = $('.js-tab-control li.active');
-    var tab = tabs.indexOf(activeTab.attr("id"));
+	let activeTab = $('.js-tab-control li.active');
+    let tab = tabs.indexOf(activeTab.attr("id"));
 	changeTab(tab+1);
 }
 function change2prevTab(){
-	var activeTab = $('.js-tab-control li.active');
-    var tab = tabs.indexOf(activeTab.attr("id"));
+	let activeTab = $('.js-tab-control li.active');
+    let tab = tabs.indexOf(activeTab.attr("id"));
 	changeTab(tab-1);
 }
 function change2clickedTab(clicked){
-	var clickedTab = clicked.attr('id');
-    var tab = tabs.indexOf(clickedTab);
+	let clickedTab = clicked.attr('id');
+    let tab = tabs.indexOf(clickedTab);
 	changeTab(tab);
 }
 
 $('.tab-courseplan li a').click(function() {
-    var clickedTab = $(this).parent();
+    let clickedTab = $(this).parent();
     change2clickedTab(clickedTab);
 });
 

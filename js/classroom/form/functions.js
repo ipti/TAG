@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////
 // Functions                                  //
 ////////////////////////////////////////////////
-var count = $('.regent-teacher').length;
-var RegentTeacherCount = count;
+let count = $('.regent-teacher').length;
+let RegentTeacherCount = count;
 
-var removeTeachingData = function () {
-    var instructor = $(this).parent().parent().parent().attr("instructor");
-    var discipline = ($(this).parent().attr("discipline"));
-    var isRegent = $(this).attr("regent");
+let removeTeachingData = function () {
+    let instructor = $(this).parent().parent().parent().attr("instructor");
+    let discipline = ($(this).parent().attr("discipline"));
+    let isRegent = $(this).attr("regent");
     if (instructor == undefined) {
         instructor = $(this).parent().attr("instructor");
         if (instructor == undefined) {
@@ -24,30 +24,33 @@ var removeTeachingData = function () {
     }
 }
 
-var removeInstructor = function (instructor) {
-    for (var i = 0; i < teachingData.length; i++) {
+let removeInstructor = function (instructor) {
+    for (let i = 0; i < teachingData.length; i++) {
         if (teachingData[i].Instructor == instructor) {
-            for (var j = 0; j < teachingData[i].Disciplines.length; j++) {
+            console.log(teachingData);
+            for (let j = 0; j < teachingData[i].Disciplines.length; j++) {
                 removeDiscipline(instructor, teachingData[i].Disciplines[j])
             }
-            teachingData.splice(i, 1);
+            teachingData.splice(i, 0);
+
         }
+        console.log(teachingData);
     }
     $("li[instructor = " + instructor + "]").remove();
 }
 
-var removeDiscipline = function (instructor, discipline) {
-    var count = 0;
-    for (var i = 0; i < teachingData.length; i++) {
-        for (var j = 0; j < teachingData[i].Disciplines.length; j++) {
+let removeDiscipline = function (instructor, discipline) {
+    let count = 0;
+    for (let i = 0; i < teachingData.length; i++) {
+        for (let j = 0; j < teachingData[i].Disciplines.length; j++) {
             if (discipline == teachingData[i].Disciplines[j])
                 count++;
         }
     }
 
-    for (var i = teachingData.length; i--;) {
+    for (let i = teachingData.length; i--;) {
         if (teachingData[i].Instructor == instructor) {
-            for (var j = teachingData[i].Disciplines.length; j--;) {
+            for (let j = teachingData[i].Disciplines.length; j--;) {
                 if (teachingData[i].Disciplines[j] == discipline)
                     teachingData[i].Disciplines.splice(j, 1);
             }
@@ -70,16 +73,26 @@ $(document).on("change", "#Role", function () {
     }
 })
 
-var addTeachingData = function () {
-    var instructorName = $('#s2id_Instructors span').text();
-    var instructorId = $('#Instructors').val();
+let addTeachingData = function () {
 
-    var disciplineList = $("#Disciplines").val();
-    var disciplineNameList = [];
+    let id = '#Role';
+    let role = $("#Role");
+    if ((role.val().length !== 0 && instructors.val().length !== 0)
+        || (role.val().length === 0 && instructors.val().length === 0)) {
+        removeError(id);
+    } else {
+        addError(id, "Selecione um cargo");
+    }
 
-    var role = $("#Role").val();
-    var contract = $("#ContractType").val();
-    var regent = $("#RegentTeacher").is(':checked') ? 1 : 0;
+    let instructorName = $('#s2id_Instructors span').text();
+    let instructorId = $('#Instructors').val();
+
+    let disciplineList = $("#Disciplines").val();
+    let disciplineNameList = [];
+
+    role = $("#Role").val();
+    let contract = $("#ContractType").val();
+    let regent = $("#RegentTeacher").is(':checked') ? 1 : 0;
 
     $.each($("#s2id_Disciplines li.select2-search-choice"), function (i, v) {
         disciplineNameList[i] = $(v).text();
@@ -91,13 +104,13 @@ var addTeachingData = function () {
             if ($("#DisciplinesWithoutInstructors li[discipline=" + disciplineList[i] + "]").length == 0) {
                 $("#DisciplinesWithoutInstructors").append(""
                     + "<li class='li-discipline' discipline='" + disciplineList[i] + "'><span>" + name + "</span>"
-                    + "<a href='#' class='deleteTeachingData delete' title='Excluir'> </a> "
+                    + "<a href='#' class='deleteTeachingData delete' title='Excluir'></a>"
                     + "</li>");
             }
             disciplines[disciplineList[i]] = 2;
         });
     } else {
-        var td = {
+        let td = {
             Instructor: instructorId,
             Classroom: null,
             Role: role,
@@ -105,11 +118,11 @@ var addTeachingData = function () {
             RegentTeacher: regent,
             Disciplines: []
         };
-        var html = "";
-        var tag = "";
+        let html = "";
+        let tag = "";
 
-        var hasInstructor = $("li[instructor = " + instructorId + "]").length != 0;
-        var instructorIndex = -1;
+        let hasInstructor = $("li[instructor = " + instructorId + "]").length != 0;
+        let instructorIndex = -1;
 
         if (!hasInstructor) {
             regentLabel = ""
@@ -130,7 +143,7 @@ var addTeachingData = function () {
         }
 
         $.each(disciplineNameList, function (i, name) {
-            var hasDiscipline = $("li[instructor = " + instructorId + "] li[discipline=" + disciplineList[i] + "]").length != 0;
+            let hasDiscipline = $("li[instructor = " + instructorId + "] li[discipline=" + disciplineList[i] + "]").length != 0;
             if (!hasDiscipline) {
                 html += "<li class='li-discipline' discipline='" + disciplineList[i] + "'>" + name
                     + "<a href='#' class='deleteTeachingData delete' title='Excluir'></a>"
@@ -154,13 +167,13 @@ var addTeachingData = function () {
         $(".regent-teacher-container").hide();
     }
     $('#RegentTeacher').prop('checked', false);
-    console.log(RegentTeacherCount)
+    $("#addTeacherSchoolComponent select").val('').trigger('change');
 }
 
 //Cria estrutura de uma aula
 //Retorna um array
 //O Ajax da problema de recursividade se colocado aqui
-var createNewLesson = function () {
+let createNewLesson = function () {
     lesson = {
         id: lesson_id++,
         id_db: 0,
@@ -177,7 +190,7 @@ var createNewLesson = function () {
 //Atualiza estrutura de uma aula
 //Retorna um array
 //O Ajax da problema de recursividade se colocado aqui
-var updateLesson = function (l) {
+let updateLesson = function (l) {
     lesson = {
         id: l.id,
         db: l.db,
@@ -191,12 +204,12 @@ var updateLesson = function (l) {
     return lesson;
 }
 
-//var instructor = $("#insertclass-instructor");
-//var uInstructor = $("#insertclass-update-instructor");
+//let instructor = $("#insertclass-instructor");
+//let uInstructor = $("#insertclass-update-instructor");
 //
 //atualizar lista de instrutores
 function atualizaListadeInstrutores() {
-    var listOfinstructors = '<option value="">Selecione o instrutor</option>';
+    let listOfinstructors = '<option value="">Selecione o instrutor</option>';
 
     $.each(teachingData, function (i, td) {
         listOfinstructors += '<option value="' + td.Instructor + '">' + teachingDataNames[td.Instructor] + '</option>';
@@ -205,10 +218,10 @@ function atualizaListadeInstrutores() {
     uInstructor.html(listOfinstructors).trigger('change');
 };
 
-var atualizarListadeDisciplinas = function () {
+let atualizarListadeDisciplinas = function () {
     //atualizar lista de disciplinas
-    var self = this;
-    var listOfdisciplines = '<option value="">Selecione a disciplina</option>';
+    let self = this;
+    let listOfdisciplines = '<option value="">Selecione a disciplina</option>';
     if ($(self).val() == '') {
         $.each(disciplines, function (i, d) {
             if (d == 2)
@@ -237,7 +250,7 @@ var atualizarListadeDisciplinas = function () {
 function updateAssistanceTypeDependencies(data) {
     data = jQuery.parseJSON(data);
 
-    var type = $('#Classroom_assistance_type').val();
+    let type = $('#Classroom_assistance_type').val();
 
     //+edu
     if (type == 1 || type == 5) {
@@ -300,6 +313,7 @@ uInstructor.on('change', atualizarListadeDisciplinas);
 $(document).on('click', '.deleteTeachingData', removeTeachingData);
 $("#addTeachingData").on('click', addTeachingData);
 
+
 $(document).on("change", ".js-assistance-types-container input[type=checkbox]", function () {
     if ($(this).attr("id") !== "Classroom_aee") {
         $("#Classroom_aee").prop("checked", false);
@@ -337,10 +351,10 @@ $(document).on("change", "#Classroom_edcenso_stage_vs_modality_fk", function () 
         },
     }).success(function (data) {
         data = JSON.parse(data);
-        var html = "";
+        let html = "";
         if (data.valid) {
             $(".no-curricular-matrix-error").hide();
-            var disciplines = [];
+            let disciplines = [];
             $.each(data.disciplines, function () {
                 html += "<option value='" + this.id + "'>" + this.name + "</option>";
                 disciplines.push(this.id);
@@ -383,9 +397,10 @@ $("#js-t-sortable").on("sortupdate", function (event, ui) {
         beforeSend: function () {
             $("#js-t-sortable").sortable("destroy");
             $("#daily").css("opacity", 0.5);
-        },
-    }).success(function (response) {
 
+        },
+
+    }).success(function (response) {
         const result = JSON.parse(response);
         const list = []
         result.forEach(element => {

@@ -45,8 +45,10 @@ class ClassroomController extends Controller
     public function accessRules()
     {
         return array(
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'create', 'update', 'getassistancetype',
+            array(
+                'allow', // allow authenticated user to perform 'create' and 'update' actions
+                'actions' => array(
+                    'index', 'view', 'create', 'update', 'getassistancetype',
                     'updateassistancetypedependencies', 'updatecomplementaryactivity',
                     'batchupdatenrollment',
                     'getcomplementaryactivitytype', 'delete',
@@ -54,15 +56,18 @@ class ClassroomController extends Controller
                 ),
                 'users' => array('@'),
             ),
-            array('allow', // allow admin user to perform 'admin' and 'delete' actions
+            array(
+                'allow', // allow admin user to perform 'admin' and 'delete' actions
                 'actions' => array('admin'),
                 'users' => array('admin'),
             ),
-            array('deny', // deny all users
+            array(
+                'deny', // deny all users
                 'users' => array('*'),
             ),
         );
     }
+
 
     private function defineAssistanceType($classroom)
     {
@@ -77,6 +82,7 @@ class ClassroomController extends Controller
             return 4;
         }
         if (isset($isSchooling) && $isSchooling) {
+
             return 0;
         }
     }
@@ -97,7 +103,8 @@ class ClassroomController extends Controller
                 2 => CHtml::encode('Unidade de Internação Socioeducativa'),
                 3 => CHtml::encode('Unidade Prisional'),
                 4 => CHtml::encode('Atividade Complementar'),
-                5 => CHtml::encode('Atendimento Educacional Especializado (AEE)'));
+                5 => CHtml::encode('Atendimento Educacional Especializado (AEE)')
+            );
 
             $selected = array(
                 0 => $classroom->assistance_type == 0 ? "selected" : "deselected",
@@ -192,7 +199,7 @@ class ClassroomController extends Controller
         $result['StageEmpty'] = false;
         if ($at == 0 || $at == 1) {
             $data = EdcensoStageVsModality::model()->findAll($where);
-        } else if ($at == 2 || $at == 3) {
+        } elseif ($at == 2 || $at == 3) {
             $data = EdcensoStageVsModality::model()->findAll('id!=1 && id!=2 && id!=3 && id!=56 ' . $where);
         } else {
             $data = array();
@@ -523,7 +530,6 @@ class ClassroomController extends Controller
             $modelClassroom->sedsp_sync = 0;
             $modelClassroom->assistance_type = $this->defineAssistanceType($modelClassroom);
 
-
             if ($modelClassroom->week_days_sunday || $modelClassroom->week_days_monday || $modelClassroom->week_days_tuesday || $modelClassroom->week_days_wednesday || $modelClassroom->week_days_thursday || $modelClassroom->week_days_friday || $modelClassroom->week_days_saturday) {
 
                 if ($modelClassroom->validate() && $modelClassroom->save()) {
@@ -543,6 +549,7 @@ class ClassroomController extends Controller
                         $modelTeachingData[$key]->disciplines = $td->Disciplines;
                         $teachingDataValidated = $teachingDataValidated && $modelTeachingData[$key]->validate();
                     }
+
 
                     if ($teachingDataValidated) {
                         foreach ($modelTeachingData as $key => $td) {
@@ -673,7 +680,10 @@ class ClassroomController extends Controller
             $beforeChangeClassroom = new Classroom();
             $beforeChangeClassroom->attributes = $modelClassroom->attributes;
             $modelClassroom->attributes = $_POST['Classroom'];
+
+
             $modelClassroom->assistance_type = $this->defineAssistanceType($modelClassroom);
+
 
             if (Yii::app()->features->isEnable("FEAT_SEDSP") && !$disableFieldsWhenItsUBATUBA) {
 
@@ -697,6 +707,7 @@ class ClassroomController extends Controller
                     $modelClassroom->sedsp_sync = 0;
                 }
             }
+
 
             $disciplines = json_decode($_POST['disciplines'], true);
             $this->setDisciplines($modelClassroom, $disciplines);
@@ -798,7 +809,6 @@ class ClassroomController extends Controller
     {
         $classroom = $this->loadModel($id, $this->MODEL_CLASSROOM);
         $teachingDatas = $this->loadModel($id, $this->MODEL_TEACHING_DATA);
-
         $ableToDelete = true;
         if (Yii::app()->features->isEnable("FEAT_SEDSP")) {
             if ($classroom->gov_id !== null) {
@@ -925,11 +935,11 @@ class ClassroomController extends Controller
                 array_push($complementaryActivitiesArray, $return->complementary_activity_type_6);
             }
             $return->complementary_activity_type_1 = $complementaryActivitiesArray;
-        } else if ($model == $this->MODEL_TEACHING_DATA) {
+        } elseif ($model == $this->MODEL_TEACHING_DATA) {
             $classroom = $id;
             $instructors = InstructorTeachingData::model()->findAll('classroom_id_fk = ' . $classroom);
             $return = $instructors;
-        } else if ($model == $this->MODEL_STUDENT_ENROLLMENT) {
+        } elseif ($model == $this->MODEL_STUDENT_ENROLLMENT) {
             $classroom = $id;
             $student = StudentEnrollment::model()->findAll('classroom_fk = ' . $classroom);
             $return = $student;
@@ -962,13 +972,13 @@ class ClassroomController extends Controller
             if ($turn == "M") {
                 $return['first'] = $config->morning_initial;
                 $return['last'] = $config->morning_final;
-            } else if ($turn == "T") {
+            } elseif ($turn == "T") {
                 $return['first'] = $config->afternoom_initial;
                 $return['last'] = $config->afternoom_final;
-            } else if ($turn == "N") {
+            } elseif ($turn == "N") {
                 $return['first'] = $config->night_initial;
                 $return['last'] = $config->night_final;
-            } else if ($turn == "I") {
+            } elseif ($turn == "I") {
                 $return['first'] = $config->allday_initial;
                 $return['last'] = $config->allday_final;
             }
@@ -992,13 +1002,14 @@ class ClassroomController extends Controller
 
     public function actionChangeEnrollments()
     {
+
         $ids = $_POST['list'];
         $enrollments = StudentEnrollment::model()->findAllByPk($ids);
 
         usort($enrollments, function ($a, $b) use ($ids) {
-            $pos_a = array_search($a->id, $ids);
-            $pos_b = array_search($b->id, $ids);
-            return $pos_a - $pos_b;
+            $posA = array_search($a->id, $ids);
+            $posB = array_search($b->id, $ids);
+            return $posA - $posB;
         });
 
         foreach ($enrollments as $i => $enrollment) {
@@ -1007,12 +1018,13 @@ class ClassroomController extends Controller
         }
         ;
         $result = array_map(function ($enrollment) {
-            return ["id" => $enrollment->id, "name" => $enrollment->studentFk->name,
-                "daily_order" => $enrollment->daily_order];
+            return [
+                "id" => $enrollment->id, "name" => $enrollment->studentFk->name,
+                "daily_order" => $enrollment->daily_order
+            ];
         }, $enrollments);
 
-        echo json_encode($result);
-        /* Yii::app()->user->setFlash('success', Yii::t('default', 'dayli order')); */
+        echo  json_encode($result);
     }
 
     public function actionSyncUnsyncedStudents()

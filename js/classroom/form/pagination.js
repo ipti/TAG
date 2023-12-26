@@ -1,85 +1,76 @@
-////////////////////////////////////////////////
-// Tabs and Pagination                        //
-////////////////////////////////////////////////
-/*
-$('.tab-classroom li a').click(function(){
-    var classActive = $('li[class="active"]');
-    var divActive = $('div .active');
-    var li1 = 'tab-classroom';
-    var li2 = 'tab-instructors';
-    var li3 = 'tab-students';
-    var tab = '';
-    switch($(this).parent().attr('id')) {
-        case li1 : tab = li1; 
-            $('.prev').hide();
-            $('.next').show();
-            $('.last').hide(); break;
-        case li2 : tab = li2;
-            $('.prev').show();
-            $('.next').hide();
-            $('.last').show(); break;
-        case li3 : tab = li3;
-            $('.prev').show();
-            $('.next').hide();
-            $('.last').hide(); break;
+$(function () {
+    changeTab(0);
+});
+    let tabs = ["tab-classroom", "tab-instructors", "tab-students", "tab-daily"];
+    changeTabNumber();
+
+function changeTabNumber(){
+    $('.js-change-number-2').html("2");
+    $('.js-change-number-3').html("3");
+    $('.js-change-number-4').html("4");
+    $('.js-change-number-5').html("5");
+}
+function changeTab(index){
+	let activeTab = $('.js-tab-control li.active');
+	let activePane = $('div .active');
+	let size = tabs.length -1;
+
+    if(index == 0){
+        $('.prev').hide();
+        $('.next').show();
+        window.location.search.includes("update") ? $('.last').show() : $('.last').hide();
+    }else if(index == size){
+        $('.prev').show();
+    	$('.next').hide();
+    	$('.last').show();
+    }else{
+        $('.prev').show();
+        $('.next').show();
+        window.location.search.includes("update") ? $('.last').show() : $('.last').hide();
     }
 
-    classActive.removeClass("active");
-    divActive.removeClass("active");
-    var next_content = tab.substring(4);
-    next_content = next_content.toString();
-    $('#'+tab).addClass("active");
-    $('#'+next_content).addClass("active");
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
-});
-$('.next').click(function(){
-    var classActive = $('ul.tab-classroom li[class="active"]');
-    var divActive = $('div .active');
-    var li1 = 'tab-classroom';
-    var li2 = 'tab-instructors';
-    var next = '';
-    switch(classActive.attr('id')) {
-        case li1 : next = li2; 
-            $('.prev').show();
-            $('.next').hide();
-            $('.last').show(); break;
-        case li2 : next = li2; break;
-    }
+	newTab = tabs[index];
 
-    classActive.removeClass("active");
-    divActive.removeClass("active");
-    var next_content = next.substring(4);
-    next_content = next_content.toString();
-    $('#'+next).addClass("active");
-    $('#'+next_content).addClass("active");
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
-});
-$('.prev').click(function(){
-    var classActive = $('li[class="active"]');
-    var divActive = $('div .active');
-    var li1 = 'tab-classroom';
-    var li2 = 'tab-instructors';
-    var li3 = 'tab-students';
-    var previous = '';
-    switch(classActive.attr('id')) {
-        case li1 : previous = li1;  break;
-        case li2 : previous = li1; 
-            $('.prev').hide();
-            $('.last').hide();
-            $('.next').show(); break;
-        case li3 : previous = li2;
-            $('.prev').show();
-            $('.next').hide();
-            $('.last').show(); break;
-    }
+    activeTab.removeClass("active");
+    activePane.removeClass("active");
 
-    classActive.removeClass("active");
-    divActive.removeClass("active");
-    var previous_content = previous.substring(4);
-    previous = previous.toString();
-    $('#'+previous).addClass("active");
-    $('#'+previous_content).addClass("active");
-    $('html, body').animate({ scrollTop: 0 }, 'fast');
+    let newPane = newTab.substring(4).toString();
+    $('#' + newTab).addClass("active");
+    $('#' + newPane).addClass("active");
+
+    $('html, body').animate({scrollTop: 0}, 'fast');
+}
+
+function change2nextTab(){
+	let activeTab = $('.js-tab-control li.active');
+    let tab = tabs.indexOf(activeTab.attr("id"));
+	changeTab(tab+1);
+}
+
+function change2prevTab(){
+	let activeTab = $('.js-tab-control li.active');
+    let tab = tabs.indexOf(activeTab.attr("id"));
+	changeTab(tab-1);
+}
+
+function change2clickedTab(clicked){
+	let clickedTab = clicked.attr('id');
+    let tab = tabs.indexOf(clickedTab);
+	changeTab(tab);
+}
+
+$('.js-tab-control li a').click(function() {
+    let clickedTab = $(this).parent();
+    change2clickedTab(clickedTab);
 });
-$('.heading-buttons').css('width', $('#content').width());
-    */
+
+$('.next').click(function() {
+	change2nextTab();
+});
+
+$('.prev').click(function() {
+	change2prevTab();
+});
+$(function () {
+    changeTabNumber(0);
+});

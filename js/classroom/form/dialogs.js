@@ -14,7 +14,7 @@ $(document).ready(function () {
         buttons: [{
                 text: btnCreate,
                 click: function () {
-                    var id = '#Role';
+                    let id = '#Role';
                     if ((role.val().length !== 0 && instructors.val().length !== 0)
                             || (role.val().length === 0 && instructors.val().length === 0)) {
                         addTeachingData();
@@ -27,7 +27,7 @@ $(document).ready(function () {
             {
                 text: btnCancel,
                 click: function () {
-                    var id = '#Role';
+                    let id = '#Role';
                     removeError(id);
                     $(this).dialog("close");
                 }}
@@ -42,4 +42,4 @@ $(document).ready(function () {
 $("#newDiscipline").click(function () {
     $("#teachingdata-dialog-form select").val('').trigger('change');
     $("#teachingdata-dialog-form").dialog('open');
-});    
+});
