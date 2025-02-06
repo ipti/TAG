@@ -1,5 +1,5 @@
 <?php
-    class CourseClassService 
+    class CourseClassService
     {
 		public function getCourseClasses($course_plan_id)
 		{
@@ -34,4 +34,27 @@
 				}
 			echo json_encode(["data" => $courseClasses]);
 		}
+        public function GetCoursePlans($discipline_fk) {
+           return  CHtml::listData(CoursePlan::model()->findAllByAttributes(["users_fk"=> Yii::app()->user->loginInfos->id, "discipline_fk"=>$discipline_fk]), 'id', 'name');
+        }
+        public function GetAbilities($discipline_fk, $stage_fk) {
+
+            $criteria = new CDbCriteria();
+            if(!TagUtils::isStageMinorEducation($stage_fk)) {
+                $criteria->addCondition('code IS NOT NULL AND edcenso_discipline_fk = :disciplineFK');
+                $criteria->params= [":disciplineFK" => $discipline_fk];
+            } else {
+                $criteria->addCondition('code IS NOT NULL');
+            }
+
+            $abilities = CourseClassAbilities::model()->findAll($criteria);
+
+            $formattedAbilities = [];
+            foreach ($abilities as $ability) {
+                $formattedAbilities[$ability->id] = "({$ability->code}) {$ability->description}";
+            }
+
+            return $formattedAbilities;
+        }
+
 	}
