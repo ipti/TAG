@@ -38,6 +38,7 @@ class CourseplanController extends Controller
                     'getDisciplines',
                     'save',
                     'getCourseClasses',
+                    'getAbilities',
                     'getAbilitiesInitialStructure',
                     'getAbilitiesNextStructure',
                     'addResources',
@@ -201,6 +202,39 @@ class CourseplanController extends Controller
             TLog::info("Listagem de disciplina por etapa de ensino.", ["Stage" => $_POST["stage"]]);
         }
         echo json_encode($result);
+    }
+
+    public function actionGetAbilities()
+    {
+
+        $disciplineId = Yii::app()->request->getPost("discipline");
+        $stage = Yii::app()->request->getPost("stage");
+
+        $criteria = new CDbCriteria();
+        $criteria->alias = "cca";
+        $criteria->join = "join edcenso_stage_vs_modality esvm on esvm.id = cca.edcenso_stage_vs_modality_fk";
+        $criteria->condition = "code is not null and cca.edcenso_stage_vs_modality_fk = :stage";
+        $criteria->params = [":stage" => $stage];
+
+        $abilities = [];
+
+        if ($disciplineId != null) {
+            $criteria->condition .= "cca.edcenso_discipline_fk = :discipline";
+            $criteria->params[":discipline"] = $disciplineId;
+        }
+
+        $abilities = CourseClassAbilities::model()->findAll($criteria);
+
+        $formattedAbilities = [];
+        foreach ($abilities as $ability) {
+            $formattedAbilities[] = [
+                "id" => $ability->id,
+                "code" => $ability->code,
+                "description" => $ability->description
+            ];
+        }
+
+        echo CJSON::encode($formattedAbilities);
     }
 
     public function actionGetAbilitiesInitialStructure()
